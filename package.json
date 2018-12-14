@@ -25,6 +25,7 @@
     "babelify": "^8.0.0",
     "browserify": "^16.2.3",
     "gulp": "^3.9.1",
+    "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
@@ -33,6 +34,16 @@
     "typescript": "^3.2.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.0"
+    "watchify": "^3.11.0",
+    "better-scroll": "^1.12.6",
+    "browser-sync": "^2.24.6",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-css": "^0.1.0",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-sass-import-once": "^2.0.2",
+    "marked": "^0.4.0",
+    "prismjs": "^1.15.0"
   }
 }
