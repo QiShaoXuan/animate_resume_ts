@@ -57,7 +57,6 @@ gulp.task('ts', function () {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('./'))
-
     .pipe(gulp.dest('docs'))
     .pipe(browserSync.reload({stream: true}));
 })
