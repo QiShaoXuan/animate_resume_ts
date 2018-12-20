@@ -1,14 +1,17 @@
-interface ContentParam {
+// 加载项
+export interface LoadParams {
   load: string
   type: 'css' | 'md'
-  container: NodeList
-  rewrite: boolean
+  container: Element
+  rewrite?: boolean
 }
 
-export interface CoreParmas {
-  content: Array<ContentParam>
+// 实例化传入参数
+export interface CoreOptions {
+  content: Array<LoadParams>
 }
 
+// 实例化
 export interface Core {
   animate: () => void
   skip: () => void
