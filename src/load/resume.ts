@@ -1,4 +1,4 @@
-export const resume = `# Qi
+export const resume:string = `# Qi
 
 Front End Engineer
 

@@ -1,6 +1,11 @@
-@import "reset";
+//@import "reset";
 @import "prism";
-
+*{
+  margin:0;
+  padding:0;
+  list-style: none;
+  box-sizing: border-box;
+}
 html, body {
   height: 100%;
   font-size: 10px;
@@ -8,27 +13,28 @@ html, body {
 
 body {
   padding: 1rem;
+  font-size: 10px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.style-container, .resume-container {
+.animate-container{
   height:100%;
 }
-
-#resume-content {
-  white-space: normal;
-  ul, ol {
-    list-style: none;
-  }
-  h1:first-of-type {
-    margin-top: 0;
-  }
+.animate-container > div{
+  height:92%;
 }
+h1:first-of-type {
+  margin-top: 0;
+}
+
+//#resume-content {
+//  white-space: normal;
+//  ul, ol {
+//    list-style: none;
+//  }
+//  h1:first-of-type {
+//    margin-top: 0;
+//  }
+//}
 
 .bottom-container {
   width: 100%;

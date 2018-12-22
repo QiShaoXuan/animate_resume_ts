@@ -1,9 +1,9 @@
 {
   "files": [
-    "src/main.ts"
+      "src/scripts/index.ts"
   ],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "target": "es2015"
+      "noImplicitAny": true,
+      "target": "es2015"
   }
 }

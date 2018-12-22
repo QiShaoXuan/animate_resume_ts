@@ -1,5 +1,8 @@
-import config from '../scripts/components/config'
-export const style1 = `/**
+import {isMobile} from '../scripts/untils/untils'
+
+const is_mobile: boolean = isMobile()
+
+export const style1:string = `/**
  *
  * Hey. My name's qishaoxuan. I'm a web developer.
  *
@@ -42,12 +45,10 @@ pre, a {
  */
 
 pre:not(:empty) {
-  ${config.isMobile?
-  `max-height: 46%;
-  width: calc(100% - 2rem);`
+  ${is_mobile ?
+  `max-height: 46%;width: calc(100% - 2rem);`
   :
-  `max-height: 92%;
-  width: 49%;`}
+  `max-height: 100%;`}
   font-size: 1.4rem;
   overflow: auto;
   background: rgb(48, 48, 48);
@@ -57,8 +58,10 @@ pre:not(:empty) {
   outline: 0;
 }
 
-#style-editor {
-  ${config.isMobile?'':'transform: translateX(95%);'}
+#style-container {
+  height:92%;
+  width: 49%;
+  ${is_mobile ? '' : 'transform: translateX(95%);'}
   position: absolute;
   left: 1rem;
   top: 1rem;
@@ -69,7 +72,7 @@ pre:not(:empty) {
  * Let's make it more readable.
  */
 
-#style-editor  { color: #DEDEDE }
+#style-container  { color: #DEDEDE }
 .comment       { color: #857F6B; font-style: italic; }
 .selector      { color: #D7BA7D; }
 .keyword       { color: #569CD6; }
@@ -85,8 +88,8 @@ body {
   perspective: 100rem;
 }
 
-#style-editor {
-  ${config.isMobile?'transform: rotateX(-10deg);':'transform: translateX(98.5%) rotateY(-10deg);'}
+#style-container {
+  ${is_mobile ? 'transform: rotateX(-10deg);' : 'transform: translateX(98.5%) rotateY(-10deg);'}
   transform-origin: right;
 }
 
@@ -95,12 +98,16 @@ body {
  * You must not just come to see the pretty colors.
  */
 
- #resume-content {
- ${config.isMobile?`position: absolute;
+ #resume-container {
+  height:92%;
+  width: 49%;
+  white-space: normal;
+ ${is_mobile ? 
+  `position: absolute;
  left: 1rem;
  bottom: 3rem;
  height: 48%;`
-  :`position: absolute;
+  : `position: absolute;
   left: 1rem;
   top: 1rem;
   transform: rotateY(10deg);
@@ -112,24 +119,24 @@ export const style2 = `/**
  * That markdown on the left doesn't look great. Let's render it.
  */
 
-#resume-content{
+#resume-container{
   padding: 2rem;
   font-size: 1.4rem;
 }
-#resume-content h1{
+#resume-container h1{
   display: inline-block;
   border-bottom: 1px solid;
   margin: 2.5rem 0 1rem;
   font-size: 2.6rem;
 }
-#resume-content a{
+#resume-container a{
   color: #ffffff;
   text-decoration: none;
 }
-#resume-content ul> li{
+#resume-container ul> li{
   margin-bottom: .3rem;
 }
-#resume-content ul> li::before{
+#resume-container ul> li::before{
   content: '•';
   margin-right: .5rem;
   color: '#ffffff';

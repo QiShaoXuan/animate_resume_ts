@@ -2,7 +2,7 @@
 export interface LoadParams {
   load: string
   type: 'css' | 'md'
-  container: Element
+  id:string
   rewrite?: boolean
 }
 
@@ -15,5 +15,10 @@ export interface CoreOptions {
 export interface Core {
   animate: () => void
   skip: () => void
+}
+
+export interface StyleParams {
+  el: Element
+  content: string
 }
 
