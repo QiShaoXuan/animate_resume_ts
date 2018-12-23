@@ -2,30 +2,32 @@
 
 ## 在线观看 view online
 
-https://qishaoxuan.github.io/animate_resume/
+https://qishaoxuan.github.io/animate_resume_ts/
 
-## 关于 about
+## 关于 features
 
-- 文字加载基于 ES6 + 异步promise封装
+- typescript
 - 字体样式参考 prismjs
-- prismjs + markedjs 处理代码转换
+- prismjs + marked 处理代码转换
 - 移动端使用了 better-scroll 优化体验
-- 打包使用了 gulp + rollup
 
 ## 本地查看
+
 ```bash
-  git clone git@github.com:QiShaoXuan/animate_resume.git
-  cd animate_resume
+  git clone git@github.com:QiShaoXuan/animate_resume_ts.git
+  cd animate_resume_ts
   npm install
-  npm run dev
+  gulp
 ```
 
 ## 修改
+
 style 和 resume 在 `src/load/` 下的对应js中
 
 ## 打包
+
 ```bash
-  npm run build
+  gulp build
 ```
 
 参考：

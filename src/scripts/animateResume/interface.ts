@@ -24,9 +24,3 @@ export interface Core {
   animate: () => void
   skip: () => void
 }
-
-// 移动端结束动画
-export interface MobileEndAnite {
-  resumeID: string
-  styleID: string
-}

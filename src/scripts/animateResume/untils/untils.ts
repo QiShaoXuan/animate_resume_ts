@@ -31,7 +31,7 @@ export function createContainer(container: Element, id: string): Element {
 
 // 判断是否为移动设备
 export function isMobile(): boolean {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? true : false
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? true : false 
 }
 
 // 设置并获取 style 标签
