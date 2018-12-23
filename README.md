@@ -11,6 +11,10 @@ https://qishaoxuan.github.io/animate_resume_ts/
 - prismjs + marked 处理代码转换
 - 移动端使用了 better-scroll 优化体验
 
+## 讲解
+
+[又双叒叕是一个动态简历](https://juejin.im/post/5c1fd3f1f265da61171cb8bf)
+
 ## 本地查看
 
 ```bash
