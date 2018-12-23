@@ -1,8 +1,9 @@
 const gulp = require("gulp")
 const browserify = require("browserify")
 const source = require('vinyl-source-stream')
+const streamify = require('gulp-streamify')
 const tsify = require("tsify")
-const uglify = require('gulp-uglify')
+const uglify = require('gulp-uglify-es').default;
 const sourcemaps = require('gulp-sourcemaps')
 const buffer = require('vinyl-buffer')
 const rename = require('gulp-rename')
@@ -36,7 +37,7 @@ gulp.task('sass', function () {
 })
 
 gulp.task("ts", function () {
-  return browserify({
+  browserify({
     basedir: '.',
     debug: true,
     entries: ['src/scripts/index.ts'],
@@ -50,10 +51,28 @@ gulp.task("ts", function () {
     .pipe(source('index.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
-    // .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest("docs/scripts/"))
     .pipe(browserSync.reload({stream: true}))
+
+  browserify({
+    basedir: '.',
+    debug: true,
+    entries: ['src/scripts/animateResume/index.ts'],
+    cache: {},
+    packageCache: {},
+    standalone:'umd'
+  })
+    .plugin(tsify)
+    .bundle()
+    .on('error', (error)=>console.log(error))
+    .pipe(source('animateResume.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(uglify())
+    .pipe(rename('animateResume.min.js'))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest("dist/"))
 })
 
 

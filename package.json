@@ -13,6 +13,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^10.0.0",
+    "better-scroll": "^1.12.6",
     "browser-sync": "^2.26.3",
     "browserify": "^16.2.3",
     "del": "^3.0.0",
@@ -22,8 +23,10 @@
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
+    "gulp-streamify": "^1.0.2",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
+    "gulp-uglify-es": "^1.0.4",
     "gulp-util": "^3.0.8",
     "htmlmin": "0.0.7",
     "install": "^0.12.2",
@@ -37,6 +40,7 @@
     "watchify": "^3.11.0"
   },
   "dependencies": {
+    "@types/better-scroll": "^1.12.1",
     "@types/marked": "^0.5.0",
     "@types/node": "^10.12.18",
     "@types/prismjs": "^1.9.0"

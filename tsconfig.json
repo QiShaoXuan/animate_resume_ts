@@ -1,9 +1,9 @@
 {
   "files": [
-      "src/scripts/index.ts"
+    "src/scripts/animateResume/index.ts"
   ],
   "compilerOptions": {
-      "noImplicitAny": true,
-      "target": "es2015"
+    "noImplicitAny": true,
+    "target": "es2015"
   }
 }

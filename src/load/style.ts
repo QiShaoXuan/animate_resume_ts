@@ -1,4 +1,4 @@
-import {isMobile} from '../scripts/untils/untils'
+import {isMobile} from '../scripts/animateResume/untils/untils'
 
 const is_mobile: boolean = isMobile()
 
@@ -8,7 +8,8 @@ export const style1:string = `/**
  *
  * I build a animating resume
  *
- * Let's begin. We start by animating... yes, everything.
+ * Let's begin. We start by animating...
+ * yes, everything.
  */
 
 * {
@@ -46,9 +47,10 @@ pre, a {
 
 pre:not(:empty) {
   ${is_mobile ?
-  `max-height: 46%;width: calc(100% - 2rem);`
+  `height:46%;
+  width: calc(100% - 2rem);`
   :
-  `max-height: 100%;`}
+  `height: 100%;`}
   font-size: 1.4rem;
   overflow: auto;
   background: rgb(48, 48, 48);
@@ -59,9 +61,7 @@ pre:not(:empty) {
 }
 
 #style-container {
-  height:92%;
-  width: 49%;
-  ${is_mobile ? '' : 'transform: translateX(95%);'}
+  height:92%;${is_mobile ? 'width:100%;' : 'width: 49%;transform: translateX(95%);'}
   position: absolute;
   left: 1rem;
   top: 1rem;
@@ -99,14 +99,12 @@ body {
  */
 
  #resume-container {
-  height:92%;
-  width: 49%;
+  height:92%;${is_mobile?'width:100%;':'width: 49%;'}
   white-space: normal;
  ${is_mobile ? 
-  `position: absolute;
- left: 1rem;
- bottom: 3rem;
- height: 48%;`
+  ` position: absolute;
+  left: 1rem;
+  top:50%;`
   : `position: absolute;
   left: 1rem;
   top: 1rem;
@@ -120,13 +118,12 @@ export const style2 = `/**
  */
 
 #resume-container{
-  padding: 2rem;
   font-size: 1.4rem;
 }
 #resume-container h1{
   display: inline-block;
   border-bottom: 1px solid;
-  margin: 2.5rem 0 1rem;
+  margin: .5rem 0 1rem;
   font-size: 2.6rem;
 }
 #resume-container a{
