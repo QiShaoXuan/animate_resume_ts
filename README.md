@@ -24,6 +24,8 @@ https://qishaoxuan.github.io/animate_resume_ts/
 
 style 和 resume 在 `src/load/` 下的对应js中
 
+也可以直接引用 `dist` 下的文件，使用参考 `src/scripts/index.ts`
+
 ## 打包
 
 ```bash

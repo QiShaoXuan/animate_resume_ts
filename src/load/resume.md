@@ -1,12 +1,13 @@
-# qi
+# QiShaoXuan
 
 Front End Engineer
 
 # Availability
 
-* html, css, js
+* html, css, js, ts, nodejs
 * jquery, vue, react
 * gulp, webpack
+* threejs, cesiumjs
 
 # Projects
 
@@ -18,6 +19,3 @@ Front End Engineer
 * [css_tricks](https://qishaoxuan.github.io/css_tricks/)
 * [js_tricks](https://qishaoxuan.github.io/js_tricks/)
 * [blog](https://qishaoxuan.github.io/blog/)
-
-
-

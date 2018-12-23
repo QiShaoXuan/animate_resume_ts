@@ -6006,7 +6006,7 @@ exports.style2 = `/**
  *
  * This page is inspired by http://strml.net/， which was what I met when I was a beginner of js.
  *
- * It is really surprise me, and now I can code it by my self.
+ * It is really surprise me, and now I can code it by myself.
  *
  * Ertainly，most of sentences is from that, my English is very poor~ after all.
  *
