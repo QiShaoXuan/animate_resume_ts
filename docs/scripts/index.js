@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.umd = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 /*!
- * better-normal-scroll v1.12.6
+ * better-normal-scroll v1.13.2
  * (c) 2016-2018 ustbhuangyi
  * Released under the MIT License.
  */
@@ -234,16 +234,20 @@ function offsetToBody(el) {
   };
 }
 
+var cssVendor = vendor && vendor !== 'standard' ? '-' + vendor.toLowerCase() + '-' : '';
+
 var transform = prefixStyle('transform');
+var transition = prefixStyle('transition');
 
 var hasPerspective = inBrowser && prefixStyle('perspective') in elementStyle;
 // fix issue #361
 var hasTouch = inBrowser && ('ontouchstart' in window || isWeChatDevTools);
 var hasTransform = transform !== false;
-var hasTransition = inBrowser && prefixStyle('transition') in elementStyle;
+var hasTransition = inBrowser && transition in elementStyle;
 
 var style = {
   transform: transform,
+  transition: transition,
   transitionTimingFunction: prefixStyle('transitionTimingFunction'),
   transitionDuration: prefixStyle('transitionDuration'),
   transitionDelay: prefixStyle('transitionDelay'),
@@ -2968,6 +2972,7 @@ function InfiniteScroller(scroller, options) {
   this.tombstoneHeight = 0;
   this.tombstoneWidth = 0;
   this.tombstones = [];
+  this.tombstonesAnimationHandlers = [];
 
   this.items = [];
   this.loadedItems = 0;
@@ -2983,9 +2988,38 @@ function InfiniteScroller(scroller, options) {
   this.scroller.on('resize', function () {
     _this.onResize();
   });
+  this.scroller.on('destroy', function () {
+    _this.destroy();
+  });
 
-  this.onResize();
+  // wait scroll core init
+  this._onResizeHandler = setTimeout(function () {
+    _this.onResize();
+  });
 }
+
+InfiniteScroller.prototype.destroy = function () {
+  var _this2 = this;
+
+  // In extreme scene, destroy is triggered before _onResizeHandler
+  clearTimeout(this._onResizeHandler);
+  this.tombstonesAnimationHandlers.forEach(function (handler) {
+    clearTimeout(handler);
+  });
+  this.tombstonesAnimationHandlers = null;
+  this.items.forEach(function (item) {
+    if (item.node) {
+      _this2.scrollerEl.removeChild(item.node);
+      item.node = null;
+    }
+  });
+  this.scroller.infiniteScroller = null;
+  this.scroller = null;
+  this.wrapperEl = null;
+  this.scrollerEl = null;
+  this.items = null;
+  this.tombstones = null;
+};
 
 InfiniteScroller.prototype.onScroll = function () {
   var scrollTop = -this.scroller.y;
@@ -3000,7 +3034,7 @@ InfiniteScroller.prototype.onScroll = function () {
   }
 
   this.anchorScrollTop = scrollTop;
-  var lastScreenItem = this._calculateAnchoredItem(this.anchorItem, this.wrapperEl.offsetHeight);
+  var lastScreenItem = this._calculateAnchoredItem(this.anchorItem, this.scroller.wrapperHeight);
 
   var start = this.anchorItem.index;
   var end = lastScreenItem.index;
@@ -3041,7 +3075,7 @@ InfiniteScroller.prototype.fill = function (start, end) {
 };
 
 InfiniteScroller.prototype.maybeRequestContent = function () {
-  var _this2 = this;
+  var _this3 = this;
 
   if (this.requestInProgress || !this.hasMore) {
     return;
@@ -3052,24 +3086,24 @@ InfiniteScroller.prototype.maybeRequestContent = function () {
   }
   this.requestInProgress = true;
   this.options.fetch(itemsNeeded).then(function (items) {
-    _this2.requestInProgress = false;
+    _this3.requestInProgress = false;
     if (items) {
-      _this2.addContent(items);
+      _this3.addContent(items);
     } else {
-      _this2.hasMore = false;
-      var tombstoneLen = _this2._removeTombstones();
+      _this3.hasMore = false;
+      var tombstoneLen = _this3._removeTombstones();
       var curPos = 0;
-      if (_this2.anchorItem.index <= _this2.items.length) {
-        curPos = _this2._fixScrollPosition();
-        _this2._setupAnimations({}, curPos);
-        _this2.scroller.resetPosition(_this2.scroller.options.bounceTime);
+      if (_this3.anchorItem.index <= _this3.items.length) {
+        curPos = _this3._fixScrollPosition();
+        _this3._setupAnimations({}, curPos);
+        _this3.scroller.resetPosition(_this3.scroller.options.bounceTime);
       } else {
-        _this2.anchorItem.index -= tombstoneLen;
-        curPos = _this2._fixScrollPosition();
-        _this2._setupAnimations({}, curPos);
-        _this2.scroller.stop();
-        _this2.scroller.resetPosition();
-        _this2.onScroll();
+        _this3.anchorItem.index -= tombstoneLen;
+        curPos = _this3._fixScrollPosition();
+        _this3._setupAnimations({}, curPos);
+        _this3.scroller.stop();
+        _this3.scroller.resetPosition();
+        _this3.onScroll();
       }
     }
   });
@@ -3107,7 +3141,8 @@ InfiniteScroller.prototype._removeTombstones = function () {
     var currentNode = this.items[i].node;
     var currentData = this.items[i].data;
     if ((!currentNode || isTombstoneNode(currentNode)) && !currentData) {
-      if (!markIndex) {
+      // 0 should be excluded
+      if (markIndex === void 0) {
         markIndex = i;
       }
       if (currentNode) {
@@ -3178,10 +3213,12 @@ InfiniteScroller.prototype._cleanupUnusedNodes = function (unusedNodes) {
 
 InfiniteScroller.prototype._cacheNodeSize = function () {
   for (var i = this.firstAttachedItem; i < this.lastAttachedItem; i++) {
+    var item = this.items[i];
     // Only cache the height if we have the real contents, not a placeholder.
-    if (this.items[i].data && !this.items[i].height) {
-      this.items[i].height = this.items[i].node.offsetHeight;
-      this.items[i].width = this.items[i].node.offsetWidth;
+    if (item.data && !item.height) {
+      var isTombstone = isTombstoneNode(item.node);
+      item.height = isTombstone ? this.tombstoneHeight : item.node.offsetHeight;
+      item.width = isTombstone ? this.tombstoneWidth : item.node.offsetWidth;
     }
   }
 };
@@ -3205,46 +3242,48 @@ InfiniteScroller.prototype._fixScrollPosition = function () {
 };
 
 InfiniteScroller.prototype._setupAnimations = function (tombstoneAnimations, curPos) {
-  var _this3 = this;
+  var _this4 = this;
 
   for (var i in tombstoneAnimations) {
     var animation = tombstoneAnimations[i];
-    this.items[i].node.style.transform = 'translateY(' + (this.anchorScrollTop + animation[1]) + 'px) scale(' + this.tombstoneWidth / this.items[i].width + ', ' + this.tombstoneHeight / this.items[i].height + ')';
+    this.items[i].node.style[style.transform] = 'translateY(' + (this.anchorScrollTop + animation[1]) + 'px) scale(' + this.tombstoneWidth / this.items[i].width + ', ' + this.tombstoneHeight / this.items[i].height + ')';
     // Call offsetTop on the nodes to be animated to force them to apply current transforms.
     /* eslint-disable no-unused-expressions */
     this.items[i].node.offsetTop;
     animation[0].offsetTop;
-    this.items[i].node.style.transition = 'transform ' + ANIMATION_DURATION_MS + 'ms';
+    this.items[i].node.style[style.transition] = cssVendor + 'transform ' + ANIMATION_DURATION_MS + 'ms';
   }
 
   for (var _i2 = this.firstAttachedItem; _i2 < this.lastAttachedItem; _i2++) {
     var _animation = tombstoneAnimations[_i2];
     if (_animation) {
       var tombstoneNode = _animation[0];
-      tombstoneNode.style.transition = 'transform ' + ANIMATION_DURATION_MS + 'ms, opacity ' + ANIMATION_DURATION_MS + 'ms';
-      tombstoneNode.style.transform = 'translateY(' + curPos + 'px) scale(' + this.items[_i2].width / this.tombstoneWidth + ', ' + this.items[_i2].height / this.tombstoneHeight + ')';
+      tombstoneNode.style[style.transition] = cssVendor + 'transform ' + ANIMATION_DURATION_MS + 'ms, opacity ' + ANIMATION_DURATION_MS + 'ms';
+      tombstoneNode.style[style.transform] = 'translateY(' + curPos + 'px) scale(' + this.items[_i2].width / this.tombstoneWidth + ', ' + this.items[_i2].height / this.tombstoneHeight + ')';
       tombstoneNode.style.opacity = 0;
     }
     if (curPos !== this.items[_i2].top) {
       if (!_animation) {
-        this.items[_i2].node.style.transition = '';
+        this.items[_i2].node.style[style.transition] = '';
       }
-      this.items[_i2].node.style.transform = 'translateY(' + curPos + 'px)';
+      this.items[_i2].node.style[style.transform] = 'translateY(' + curPos + 'px)';
     }
     this.items[_i2].top = curPos;
     curPos += this.items[_i2].height || this.tombstoneHeight;
   }
 
-  this.scroller.maxScrollY = -(curPos - this.wrapperEl.offsetHeight + (this.hasMore ? DEFAULT_SCROLL_RUNWAY : 0));
+  this.scroller.maxScrollY = -(curPos - this.scroller.wrapperHeight + (this.hasMore ? DEFAULT_SCROLL_RUNWAY : 0));
 
-  setTimeout(function () {
+  var tombstoneAnimationsHandler = setTimeout(function () {
     for (var _i3 in tombstoneAnimations) {
       var _animation2 = tombstoneAnimations[_i3];
       _animation2[0].style.display = 'none';
       // Tombstone can be recycled now.
-      _this3.tombstones.push(_animation2[0]);
+      _this4.tombstones.push(_animation2[0]);
     }
   }, ANIMATION_DURATION_MS);
+
+  this.tombstonesAnimationHandlers.push(tombstoneAnimationsHandler);
 };
 
 InfiniteScroller.prototype._getTombStone = function () {
@@ -3252,8 +3291,8 @@ InfiniteScroller.prototype._getTombStone = function () {
   if (tombstone) {
     tombstone.style.display = '';
     tombstone.style.opacity = 1;
-    tombstone.style.transform = '';
-    tombstone.style.transition = '';
+    tombstone.style[style.transform] = '';
+    tombstone.style[style.transition] = '';
     return tombstone;
   }
   return this.options.createTombstone();
@@ -3328,7 +3367,7 @@ mouseWheelMixin(BScroll);
 zoomMixin(BScroll);
 infiniteMixin(BScroll);
 
-BScroll.Version = '1.12.6';
+BScroll.Version = '1.13.2';
 
 return BScroll;
 
@@ -5859,7 +5898,6 @@ Front End Engineer
 * [JS Tricks](https://qishaoxuan.github.io/js_tricks/)
 * [Bolg](https://qishaoxuan.github.io/blog/)
 `;
-
 },{}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -6011,7 +6049,6 @@ exports.style2 = `/**
  * Ertainly，most of sentences is from that, my English is very poor~ after all.
  *
  */`;
-
 },{"../scripts/animateResume/untils/untils":8}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -6040,11 +6077,11 @@ class AnimateResume {
     }
     loadItem(item) {
         return new Promise((resolve, reject) => {
-            let container = untils_1.createContainer(this.container, item.id);
+            const container = untils_1.createContainer(this.container, item.id);
             let num = 0;
-            let sum = item.load.length;
+            const sum = item.load.length;
             let originContent = item.rewrite ? '' : container.innerHTML;
-            let interval = 16;
+            const interval = 16;
             let styleEl;
             if (item.type === 'css') {
                 styleEl = untils_1.getStyleEl();
@@ -6086,7 +6123,7 @@ class AnimateResume {
     }
     skipAnimate() {
         this.options.content.forEach((item) => {
-            let container = untils_1.createContainer(this.container, item.id);
+            const container = untils_1.createContainer(this.container, item.id);
             switch (item.type) {
                 case 'css':
                     this.skipStyle(item, container);
@@ -6101,10 +6138,10 @@ class AnimateResume {
         }
     }
     skipStyle(item, container) {
-        let styleStr = item.load;
-        let styleEl = untils_1.getStyleEl();
+        const styleStr = item.load;
+        const styleEl = untils_1.getStyleEl();
         let originContent = '';
-        let code = Prism.highlight(styleStr, Prism.languages.css);
+        const code = Prism.highlight(styleStr, Prism.languages.css);
         if (!item.rewrite) {
             originContent = container.innerHTML;
         }
@@ -6122,17 +6159,16 @@ class AnimateResume {
     }
 }
 exports.default = AnimateResume;
-
 },{"./untils/mobileEndAnimate":7,"./untils/untils":8,"marked":2,"prismjs":3}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BScroll = require("better-scroll");
 function mobileEndAnimate(styleID, resumeID) {
-    let body = document.querySelector('body');
-    let styleContainer = document.querySelector(`#${styleID}`);
-    let style = document.querySelector(`#${styleID}-pre`);
-    let mdContainer = document.querySelector(`#${resumeID}`);
-    let md = document.querySelector(`#${resumeID}-pre`);
+    const body = document.querySelector('body');
+    const styleContainer = document.querySelector(`#${styleID}`);
+    const style = document.querySelector(`#${styleID}-pre`);
+    const mdContainer = document.querySelector(`#${resumeID}`);
+    const md = document.querySelector(`#${resumeID}-pre`);
     body.style.cssText = 'overflow:hidden';
     let css = {
         width: 'calc(100% - 2rem)',
@@ -6143,12 +6179,12 @@ function mobileEndAnimate(styleID, resumeID) {
         position: 'absolute',
         left: '1rem',
     };
-    let cssStr = Object.entries(css).map((v) => v.join(':')).join(';');
+    const cssStr = Object.entries(css).map((v) => v.join(':')).join(';');
     styleContainer.style.cssText = cssStr;
     mdContainer.style.cssText = cssStr;
     styleContainer.style.top = '1rem';
     mdContainer.style.top = 'calc(100% + 1rem)';
-    let preCss = {
+    const preCss = {
         transition: 'all 0s',
         maxHeight: 'none',
         overflow: 'visible',
@@ -6168,12 +6204,12 @@ function mobileEndAnimate(styleID, resumeID) {
         mdContainer.style.transform = 'translateY(calc(-100% - 4rem))';
         styleContainer.style.transform = 'translateY(calc(-100% - 1rem))';
     }, 500);
-    let styleScroll = new BScroll(styleContainer, {
+    const styleScroll = new BScroll(styleContainer, {
         pullUpLoad: {
             threshold: 20
         }
     });
-    let mdScroll = new BScroll(mdContainer, {
+    const mdScroll = new BScroll(mdContainer, {
         pullDownRefresh: {
             threshold: 20,
         }
@@ -6190,7 +6226,6 @@ function mobileEndAnimate(styleID, resumeID) {
     });
 }
 exports.default = mobileEndAnimate;
-
 },{"better-scroll":1}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -6230,33 +6265,32 @@ function isMobile() {
 exports.isMobile = isMobile;
 // 设置并获取 style 标签
 function getStyleEl() {
-    let newStyle = document.createElement('style');
-    let head = document.querySelector('head');
+    const newStyle = document.createElement('style');
+    const head = document.querySelector('head');
     head.appendChild(newStyle);
-    let allStyle = document.querySelectorAll('style');
+    const allStyle = document.querySelectorAll('style');
     return allStyle[allStyle.length - 1];
 }
 exports.getStyleEl = getStyleEl;
-
 },{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./animateResume/index");
 const style_1 = require("../load/style");
 const resume_1 = require("../load/resume");
-let load1 = {
+const load1 = {
     load: style_1.style1,
     type: 'css',
     id: 'style-container',
     rewrite: true
 };
-let load2 = {
+const load2 = {
     load: resume_1.resume,
     type: 'md',
     id: 'resume-container',
     rewrite: true
 };
-let load3 = {
+const load3 = {
     load: style_1.style2,
     type: 'css',
     id: 'style-container',
@@ -6278,7 +6312,6 @@ skipBtn.addEventListener('click', function () {
 ar.animate(() => {
     skipBtn.style.display = 'none';
 });
-
 },{"../load/resume":4,"../load/style":5,"./animateResume/index":6}]},{},[9])(9)
 });
 

@@ -1,11 +1,11 @@
 import * as BScroll from 'better-scroll'
 
 export default function mobileEndAnimate(styleID: string, resumeID: string): void {
-  let body: HTMLElement = document.querySelector('body')
-  let styleContainer: HTMLElement = document.querySelector(`#${styleID}`)
-  let style: HTMLElement = document.querySelector(`#${styleID}-pre`)
-  let mdContainer: HTMLElement = document.querySelector(`#${resumeID}`)
-  let md: HTMLElement = document.querySelector(`#${resumeID}-pre`)
+  const body: HTMLElement = document.querySelector('body')
+  const styleContainer: HTMLElement = document.querySelector(`#${styleID}`)
+  const style: HTMLElement = document.querySelector(`#${styleID}-pre`)
+  const mdContainer: HTMLElement = document.querySelector(`#${resumeID}`)
+  const md: HTMLElement = document.querySelector(`#${resumeID}-pre`)
 
   body.style.cssText = 'overflow:hidden'
 
@@ -18,7 +18,7 @@ export default function mobileEndAnimate(styleID: string, resumeID: string): voi
     position: 'absolute',
     left: '1rem',
   }
-  let cssStr = (<any>Object).entries(css).map((v: Array<string>) => v.join(':')).join(';')
+  const cssStr = (<any>Object).entries(css).map((v: Array<string>) => v.join(':')).join(';')
 
   styleContainer.style.cssText = cssStr
   mdContainer.style.cssText = cssStr
@@ -26,7 +26,7 @@ export default function mobileEndAnimate(styleID: string, resumeID: string): voi
   styleContainer.style.top = '1rem'
   mdContainer.style.top = 'calc(100% + 1rem)'
 
-  let preCss = {
+  const preCss = {
     transition: 'all 0s',
     maxHeight: 'none',
     overflow: 'visible',
@@ -51,13 +51,13 @@ export default function mobileEndAnimate(styleID: string, resumeID: string): voi
     styleContainer.style.transform = 'translateY(calc(-100% - 1rem))'
   }, 500)
 
-  let styleScroll = new (<any>BScroll)(styleContainer, {
+  const styleScroll = new (<any>BScroll)(styleContainer, {
     pullUpLoad: {
       threshold: 20
     }
   })
 
-  let mdScroll = new (<any>BScroll)(mdContainer, {
+  const mdScroll = new (<any>BScroll)(mdContainer, {
     pullDownRefresh: {
       threshold: 20,
     }

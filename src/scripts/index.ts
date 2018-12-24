@@ -3,19 +3,19 @@ import AnimateResume from './animateResume/index'
 import {style1, style2} from '../load/style'
 import {resume} from "../load/resume";
 
-let load1: LoadParams = {
+const load1: LoadParams = {
   load: style1,
   type: 'css',
   id: 'style-container',
   rewrite: true
 }
-let load2: LoadParams = {
+const load2: LoadParams = {
   load: resume,
   type: 'md',
   id: 'resume-container',
   rewrite: true
 }
-let load3: LoadParams = {
+const load3: LoadParams = {
   load: style2,
   type: 'css',
   id: 'style-container',

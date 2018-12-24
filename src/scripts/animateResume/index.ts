@@ -38,11 +38,11 @@ export default class AnimateResume implements Core {
 
   private loadItem(item: LoadParams): Promise<void> {
     return new Promise((resolve, reject) => {
-      let container = createContainer(this.container, item.id)
+      const container = createContainer(this.container, item.id)
       let num = 0
-      let sum = item.load.length
+      const sum = item.load.length
       let originContent = item.rewrite ? '' : container.innerHTML
-      let interval = 16
+      const interval = 16
 
       let styleEl: Element
       if (item.type === 'css') {
@@ -94,7 +94,7 @@ export default class AnimateResume implements Core {
 
   private skipAnimate() {
     this.options.content.forEach((item) => {
-      let container = createContainer(this.container, item.id)
+      const container = createContainer(this.container, item.id)
 
       switch (item.type) {
         case 'css':
@@ -112,10 +112,10 @@ export default class AnimateResume implements Core {
   }
 
   private skipStyle(item: LoadParams, container: Element) {
-    let styleStr = item.load
-    let styleEl = getStyleEl()
+    const styleStr = item.load
+    const styleEl = getStyleEl()
     let originContent = ''
-    let code = Prism.highlight(styleStr, Prism.languages.css)
+    const code = Prism.highlight(styleStr, Prism.languages.css)
 
     if (!item.rewrite) {
       originContent = container.innerHTML
