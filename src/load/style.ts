@@ -105,7 +105,7 @@ body {
   ` position: absolute;
   left: 1rem;
   top:50%;`
-  : `position: absolute;
+  : ` position: absolute;
   left: 1rem;
   top: 1rem;
   transform: rotateY(10deg);
