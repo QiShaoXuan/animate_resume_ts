@@ -20,5 +20,5 @@ Front End Engineer
 * [vue_teris](https://qishaoxuan.github.io/vue_tetris/)
 * [CSS Tricks](https://qishaoxuan.github.io/css_tricks/)
 * [JS Tricks](https://qishaoxuan.github.io/js_tricks/)
-* [Bolg](https://qishaoxuan.github.io/blog/)
+* [Blog](https://qishaoxuan.github.io/blog/)
 `
