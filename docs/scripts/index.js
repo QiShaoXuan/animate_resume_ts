@@ -5846,11 +5846,11 @@ Front End Engineer
 
 # Work Experience
 
-* 上海垓方
+* FinxOS
 
 # Projects
 
-* [www.gigacre.com](http://www.gigacre.com/)
+* editor for financing institution
 
 # My Source
 
